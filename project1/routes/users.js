@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 })
 
 router.get("/:id", (req, res) => {
-    const user = users.find(u => u.id === parseInt(req.params.id));
+    const user = findUser(req.params.id);
     if (!user)  return res.status(404).send("User with given id doesn't exist!");
     res.send(user);
 })
@@ -33,6 +33,14 @@ router.post("/", (req, res) => {
 
 })
 
+router.delete('/:id', (req, res) => {
+    var user = findUser(req.params.id);
+    if (!user) return res.status(404).send("User with given id doesn't exist!");
+
+    const index = users.indexOf(user);
+    users.splice(index, 1);
+    res.send(user);
+});
 
 function uniqueUsername(value, helper){
     const isUsernameUnique = users.find(u => value === u.username);
@@ -47,6 +55,10 @@ function validateUser(user){
         age: Joi.number().integer().greater(10).required(),
     });
     return schema.validate(user);
+}
+
+function findUser(id){
+    return users.find(u => u.id === parseInt(id));
 }
 
 module.exports = router;
