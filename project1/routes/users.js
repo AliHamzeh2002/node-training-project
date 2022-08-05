@@ -33,14 +33,27 @@ router.post("/", (req, res) => {
 
 })
 
-router.delete('/:id', (req, res) => {
-    var user = findUser(req.params.id);
+router.delete("/:id", (req, res) => {
+    const user = findUser(req.params.id);
     if (!user) return res.status(404).send("User with given id doesn't exist!");
 
     const index = users.indexOf(user);
     users.splice(index, 1);
     res.send(user);
 });
+
+router.put("/:id", (req, res) => {
+    const user = findUser(req.params.id);
+    if (!user) return res.status(404).send("User with given id doesn't exist!");
+
+    const { error } = validateUser(req.body);
+    if(error && error.details[0].type != "custom") return res.status(400).send(error.details[0].message);
+
+    user.age = req.body.age;
+    user.name = req.body.name;
+    user.username = req.body.username;
+    res.send(user);
+})
 
 function uniqueUsername(value, helper){
     const isUsernameUnique = users.find(u => value === u.username);
