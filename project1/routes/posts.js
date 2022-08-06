@@ -57,7 +57,7 @@ router.delete("/:id", (req, res) => {
     res.send(post);
 });
 
-function validatePost(user){
+function validatePost(post){
     const schema = Joi.object({
         title: Joi.string().min(3).required(),
         text: Joi.string().min(10).required(),
