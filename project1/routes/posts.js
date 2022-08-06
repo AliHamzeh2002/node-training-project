@@ -34,6 +34,20 @@ router.post("/", (req, res) => {
 
 })
 
+router.put("/:id", (req, res) => {
+    const post = findPostById(req.params.id);
+    if (!post) return res.status(404).send("User with given id doesn't exist!");
+
+    const { error } = validatePost(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    if (post.userId !== req.body.userId)  return res.status(400).send("userId can't be changed");
+
+    post.title = req.body.title;
+    post.text = req.body.text;
+    res.send(post);
+})
+
 function validatePost(user){
     const schema = Joi.object({
         title: Joi.string().min(3).required(),
