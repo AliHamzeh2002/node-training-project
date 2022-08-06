@@ -19,6 +19,33 @@ router.get("/:id", (req, res) => {
     res.send(post);
 })
 
+router.post("/", (req, res) => {
+    const { error } = validatePost(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+    
+    const post = {id: available_id,
+                title: req.body.title,
+                text: req.body.text,
+                userId: req.body.userId
+    };
+    available_id++;
+    posts.push(post);
+    res.send(post);
+
+})
+
+function validatePost(user){
+    const schema = Joi.object({
+        title: Joi.string().min(3).required(),
+        text: Joi.string().min(10).required(),
+        userId: Joi.number().integer().required().custom((value , helper) => {
+            if (!findUserById(value)) return helper.message("Username with given id doesn't exist");
+            return value;
+        }),
+    });
+    return schema.validate(user);
+}
+
 function findPostById(id){
     return posts.find(post => post.id === parseInt(id));
 }

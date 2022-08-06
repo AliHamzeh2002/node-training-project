@@ -75,5 +75,5 @@ function findUserById(id){
 }
 
 module.exports.router = router;
-module.exports.findUser = findUserById;
+module.exports.findUserById = findUserById;
 
