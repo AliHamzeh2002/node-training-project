@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 })
 
 router.get("/:id", (req, res) => {
-    const user = findUser(req.params.id);
+    const user = findUserById(req.params.id);
     if (!user)  return res.status(404).send("User with given id doesn't exist!");
     res.send(user);
 })
@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
 })
 
 router.delete("/:id", (req, res) => {
-    const user = findUser(req.params.id);
+    const user = findUserById(req.params.id);
     if (!user) return res.status(404).send("User with given id doesn't exist!");
 
     const index = users.indexOf(user);
@@ -43,7 +43,7 @@ router.delete("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-    const user = findUser(req.params.id);
+    const user = findUserById(req.params.id);
     if (!user) return res.status(404).send("User with given id doesn't exist!");
 
     const { error } = validateUser(req.body);
@@ -70,10 +70,10 @@ function validateUser(user){
     return schema.validate(user);
 }
 
-function findUser(id){
+function findUserById(id){
     return users.find(u => u.id === parseInt(id));
 }
 
 module.exports.router = router;
-module.exports.findUser = findUser;
+module.exports.findUser = findUserById;
 
