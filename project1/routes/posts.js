@@ -50,7 +50,7 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
     const post = findPostById(req.params.id);
-    if (!post) return res.status(404).send("User with given id doesn't exist!");
+    if (!post) return res.status(404).send("Post with given id doesn't exist!");
 
     const index = posts.indexOf(post);
     posts.splice(index, 1);

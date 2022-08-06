@@ -35,6 +35,15 @@ router.post("/", (req, res) => {
 
 })
 
+router.delete("/:id", (req, res) => {
+    const like = findLikesById(req.params.id);
+    if (!like) return res.status(404).send("Like with given id doesn't exist!");
+
+    const index = likes.indexOf(like);
+    likes.splice(index, 1);
+    res.send(like);
+});
+
 function validateLike(like){
     const schema = Joi.object({
         userId: Joi.number().integer().required().custom((value , helper) => {
