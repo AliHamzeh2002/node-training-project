@@ -14,4 +14,14 @@ router.get("/", (req, res) => {
     res.send(likes);
 })
 
+router.get("/:id", (req, res) => {
+    const like = findLikesById(req.params.id);
+    if (!like) return res.status(404).send("like with given id doesn't exist!");
+    res.send(like);
+})
+
+function findLikesById(id){
+    return likes.find(like => like.id === parseInt(id));
+}
+
 module.exports.router = router;
