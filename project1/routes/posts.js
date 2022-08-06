@@ -74,3 +74,4 @@ function findPostById(id){
 }
 
 module.exports.router = router;
+module.exports.findPostById = findPostById;
