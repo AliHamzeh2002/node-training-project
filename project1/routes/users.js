@@ -74,5 +74,6 @@ function findUser(id){
     return users.find(u => u.id === parseInt(id));
 }
 
-module.exports = router;
+module.exports.router = router;
+module.exports.findUser = findUser;
 
