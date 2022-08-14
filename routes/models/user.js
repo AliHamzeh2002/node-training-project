@@ -56,6 +56,7 @@ function validateUser(user){
         phoneNumber: Joi.string().length(11).required(),
         password: Joi.string().min(5).max(255).required()
     });
+    return schema.validate(user);
 }
 
 exports.User = User;
