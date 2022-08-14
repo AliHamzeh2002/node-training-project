@@ -1,16 +1,14 @@
 const express = require('express');
-const Joi = require("joi");
+const {validate, User} = require("../models/user.js")
 const router = express.Router();
 
-const users = [
-    {id: 1, name:"ali", username:"admin", age:19}
-];
-
-let available_id = 2;
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+    console.log(1111);
+    const users = await User
+                    .find()
+                    .select("name username age");
     res.send(users);
-})
+});
 
 router.get("/:id", (req, res) => {
     const user = findUserById(req.params.id);
