@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 50
     },
-    
+
     username:{
         type: String,
         required: true,
@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         uniquie: true,
+        lowercase: true,
         minlength: 5,
         maxlength: 255,
     },
@@ -60,7 +61,7 @@ function validateUser(user){
         username: Joi.string().min(2).max(255).required(),
         age: Joi.number().integer().greater(10),
         email: Joi.String().min(2).max(255).email().required(),
-        phoneNumber: Joi.string().length(11).required(),
+        phoneNumber: Joi.Number().min(11).max(11).required(),
         password: Joi.string().min(5).max(255).required()
     });
     return schema.validate(user);
