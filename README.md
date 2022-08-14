@@ -1,1 +1,1 @@
-# node-training-projects
+NodeJs Training Project - A Simple Social Media API
