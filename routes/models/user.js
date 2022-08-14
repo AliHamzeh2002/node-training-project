@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 50
     },
+    
     username:{
         type: String,
         required: true,
@@ -15,11 +16,15 @@ const userSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 50
     },
+
     age:{
         type: Number,
         min: 10,
-        max: 200
+        max: 200,
+        get: v => Math.round(v),
+        set: v => Math.round(v)
     },
+
     email:{
         type: String,
         required: true,
@@ -27,16 +32,18 @@ const userSchema = new mongoose.Schema({
         minlength: 5,
         maxlength: 255,
     },
+
     phoneNumber:{
-        type: String,
+        type: Number,
         required: true,
         validate:{
             validator: function(val){
-                return val.length === 11
+                return val.toString().length === 11
             },
             message: "Phone number should have 11 characters"
         }
     },
+
     password:{
         type: String,
         required: true,
