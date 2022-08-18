@@ -1,12 +1,13 @@
 const express = require('express');
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const {validate, User} = require("../models/user.js")
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    console.log(1111);
     const users = await User
                     .find()
-                    .select("name username age");
+                    .select("username age email phoneNumber -_id");
     res.send(users);
 });
 
@@ -16,20 +17,25 @@ router.get("/:id", (req, res) => {
     res.send(user);
 })
 
-router.post("/", (req, res) => {
-    const { error } = validateUser(req.body);
+router.post("/", async (req, res) => {
+    const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     
-    const user = {id: available_id,
-                name: req.body.name,
-                username: req.body.username,
-                age: req.body.age
-    };
-    available_id++;
-    users.push(user);
-    res.send(user);
+    let user = await User.findOne({$or:[{email: req.body.email},
+                                 {username: req.body.username}]});
+    if(user) return res.status(400).send("Email or Username Already Registered.");
 
-})
+    user = new User(_.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]));
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.password, salt);
+
+    await user.save();
+    
+    const token = user.generateAuthToken();
+    res
+        .header("x-auth-token", token)
+        .send(_.pick(user, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
+});
 
 router.delete("/:id", (req, res) => {
     const user = findUserById(req.params.id);
@@ -53,25 +59,5 @@ router.put("/:id", (req, res) => {
     res.send(user);
 })
 
-function uniqueUsername(value, helper){
-    const isUsernameUnique = users.find(u => value === u.username);
-    if (isUsernameUnique)  return helper.message("username is not unique");
-    return value;
-}
-
-function validateUser(user){
-    const schema = Joi.object({
-        name: Joi.string().min(3).required(),
-        username: Joi.string().min(3).required().custom(uniqueUsername),
-        age: Joi.number().integer().greater(10).required(),
-    });
-    return schema.validate(user);
-}
-
-function findUserById(id){
-    return users.find(u => u.id === parseInt(id));
-}
-
 module.exports.router = router;
-module.exports.findUserById = findUserById;
 

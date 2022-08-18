@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         validate:{
             validator: function(val){
-                return val.toString().length === 11
+                return val.toString().length < 11
             },
             message: "Phone number should have 11 characters"
         }
@@ -63,17 +63,17 @@ userSchema.methods.generateAuthToken = function(){
         config.get("jwtPrivateKey")
     );
     return token;
-};
+}
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("users", userSchema);
 
 function validateUser(user){
     const schema = Joi.object({
         name: Joi.string().min(2).max(255).required(),
         username: Joi.string().min(2).max(255).required(),
         age: Joi.number().integer().greater(10),
-        email: Joi.String().min(2).max(255).email().required(),
-        phoneNumber: Joi.Number().min(11).max(11).required(),
+        email: Joi.string().min(2).max(255).email().required(),
+        phoneNumber: Joi.number().required(),
         password: Joi.string().min(5).max(255).required()
     });
     return schema.validate(user);
