@@ -12,14 +12,6 @@ router.get("/", async (req, res) => {
     res.send(users);
 });
 
-router.get("/me", auth, async(req, res) => {
-    console.log(req.user);
-    const user = await User
-            .findById(req.user._id)
-            .select("-password");
-    res.send(user);
-});
-
 router.post("/", async (req, res) => {
     const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
@@ -40,26 +32,34 @@ router.post("/", async (req, res) => {
         .send(_.pick(user, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
 });
 
-router.delete("/:id", (req, res) => {
-    const user = findUserById(req.params.id);
-    if (!user) return res.status(404).send("User with given id doesn't exist!");
-
-    const index = users.indexOf(user);
-    users.splice(index, 1);
+router.get("/me", auth, async(req, res) => {
+    const user = await User
+            .findById(req.user._id)
+            .select("-password");
     res.send(user);
 });
 
-router.put("/:id", (req, res) => {
-    const user = findUserById(req.params.id);
-    if (!user) return res.status(404).send("User with given id doesn't exist!");
-
-    const { error } = validateUser(req.body);
-    if(error && error.details[0].type != "custom") return res.status(400).send(error.details[0].message);
-
-    user.age = req.body.age;
-    user.name = req.body.name;
-    user.username = req.body.username;
+router.delete("/me", auth, async(req, res) => {
+    const user = await User.findByIdAndDelete(req.user._id)
+                            .select("-password");
     res.send(user);
+});
+
+router.put("/me", auth, async (req, res) => {
+    let users = await User.find({$or:[{email: req.body.email}, {username: req.body.username}]});
+    console.log(users)
+    if (users.length > 1 || (users.length && users[0].id !== req.user._id))
+        return res.status(400).send("Email or Username Already Used.");
+    
+    let updatedData = _.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]);
+    const salt = await bcrypt.genSalt(10);
+    updatedData.password = await bcrypt.hash(req.body.password, salt);
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true})
+    const token = updatedUser.generateAuthToken();
+    res
+        .header("x-auth-token", token)
+        .send(_.pick(updatedUser, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
 })
 
 module.exports.router = router;
