@@ -4,56 +4,58 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required: true,
-        minlength: 2,
-        maxlength: 50
-    },
+        name:{
+            type: String,
+            required: true,
+            minlength: 2,
+            maxlength: 50
+        },
 
-    username:{
-        type: String,
-        required: true,
-        unique: true,
-        minlength: 2,
-        maxlength: 50
-    },
+        username:{
+            type: String,
+            required: true,
+            unique: true,
+            minlength: 2,
+            maxlength: 50
+        },
 
-    age:{
-        type: Number,
-        min: 10,
-        max: 200,
-        get: v => Math.round(v),
-        set: v => Math.round(v)
-    },
+        age:{
+            type: Number,
+            min: 10,
+            max: 200,
+            get: v => Math.round(v),
+            set: v => Math.round(v)
+        },
 
-    email:{
-        type: String,
-        required: true,
-        uniquie: true,
-        lowercase: true,
-        minlength: 5,
-        maxlength: 255,
-    },
+        email:{
+            type: String,
+            required: true,
+            uniquie: true,
+            lowercase: true,
+            minlength: 5,
+            maxlength: 255,
+        },
 
-    phoneNumber:{
-        type: Number,
-        required: true,
-        validate:{
-            validator: function(val){
-                return val.toString().length < 11
-            },
-            message: "Phone number should have 11 characters"
-        }
-    },
+        phoneNumber:{
+            type: Number,
+            required: true,
+            validate:{
+                validator: function(val){
+                    return val.toString().length < 11
+                },
+                message: "Phone number should have 11 characters"
+            }
+        },
 
-    password:{
-        type: String,
-        required: true,
-        minlength: 5,
-        maxlength: 1024
-    }
-});
+        password:{
+            type: String,
+            required: true,
+            minlength: 5,
+            maxlength: 1024
+        },
+    },
+    {timestamps: true}
+);
 
 userSchema.methods.generateAuthToken = function(){
     const token = jwt.sign({
