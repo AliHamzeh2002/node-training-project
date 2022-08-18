@@ -2,6 +2,7 @@ const express = require('express');
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const {validate, User} = require("../models/user.js")
+const auth = require("../middlewares/auth.js")
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -11,11 +12,13 @@ router.get("/", async (req, res) => {
     res.send(users);
 });
 
-router.get("/:id", (req, res) => {
-    const user = findUserById(req.params.id);
-    if (!user)  return res.status(404).send("User with given id doesn't exist!");
+router.get("/me", auth, async(req, res) => {
+    console.log(req.user);
+    const user = await User
+            .findById(req.user._id)
+            .select("-password");
     res.send(user);
-})
+});
 
 router.post("/", async (req, res) => {
     const { error } = validate(req.body);
