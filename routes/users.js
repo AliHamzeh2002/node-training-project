@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     const users = await User
                     .find()
-                    .select("username age email phoneNumber -_id");
+                    .select("username age email -_id");
     res.send(users);
 });
 
