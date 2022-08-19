@@ -2,11 +2,23 @@ const express = require('express');
 const _ = require("lodash");
 const {Post, validate} = require("../models/post");
 const {User} = require("../models/user");
-const auth = require("../middlewares/auth")
+const auth = require("../middlewares/auth");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    
+router.get("/", async (req, res) => {
+    let posts;
+    if (req.query.sort === "created_at"){
+        posts = await Post
+            .find()
+            .select("-_id title text createdAt author.username")
+            .sort("-createdAt")
+    }
+    else{
+        posts = await Post
+            .find()
+            .select("-_id title text createdAt author.username")
+    }
+
     res.send(posts);
 })
 
