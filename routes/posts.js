@@ -24,7 +24,8 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try{
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(req.params.id)
+                                .select("title text createdAt author.username");
         if (!post)  return res.status(404).send("Post Not Found");
             res.send(post);
     }
@@ -46,18 +47,26 @@ router.post("/", auth, async (req, res) => {
 
 })
 
-router.put("/:id", (req, res) => {
-    const post = findPostById(req.params.id);
-    if (!post) return res.status(404).send("Post with given id doesn't exist!");
-
-    const { error } = validatePost(req.body);
+router.put("/:id", auth, async (req, res) => {
+    const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
-    if (post.userId !== req.body.userId)  return res.status(400).send("userId can't be changed");
+    author = await User.findById(req.user._id);
+    if (!author) return res.status(400).send("Invalid User.");
 
-    post.title = req.body.title;
-    post.text = req.body.text;
-    res.send(post);
+    try{
+        const post = await Post.findById(req.params.id);
+        if (!post)  return res.status(404).send("Post Not Found");
+        if (!author._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
+
+        post.title = req.body.title;
+        post.text = req.body.text;
+        await post.save()
+        res.send(post);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 })
 
 router.delete("/:id", (req, res) => {

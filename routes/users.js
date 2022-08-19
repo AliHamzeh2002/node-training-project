@@ -47,7 +47,6 @@ router.delete("/me", auth, async(req, res) => {
 
 router.put("/me", auth, async (req, res) => {
     let users = await User.find({$or:[{email: req.body.email}, {username: req.body.username}]});
-    console.log(users)
     if (users.length > 1 || (users.length && users[0].id !== req.user._id))
         return res.status(400).send("Email or Username Already Used.");
     
