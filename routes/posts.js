@@ -69,30 +69,22 @@ router.put("/:id", auth, async (req, res) => {
     }
 })
 
-router.delete("/:id", (req, res) => {
-    const post = findPostById(req.params.id);
-    if (!post) return res.status(404).send("Post with given id doesn't exist!");
+router.delete("/:id", auth, async (req, res) => {
+    author = await User.findById(req.user._id);
+    if (!author) return res.status(400).send("Invalid User.");
 
-    const index = posts.indexOf(post);
-    posts.splice(index, 1);
-    res.send(post);
+    try{
+        const post = await Post.findById(req.params.id);
+        if (!post)  return res.status(404).send("Post Not Found");
+        if (!author._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
+        await post.remove();
+        res.send(post);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 });
 
-function validatePost(post){
-    const schema = Joi.object({
-        title: Joi.string().min(3).required(),
-        text: Joi.string().min(10).required(),
-        userId: Joi.number().integer().required().custom((value , helper) => {
-            if (!findUserById(value)) return helper.message("Username with given id doesn't exist");
-            return value;
-        }),
-    });
-    return schema.validate(user);
-}
 
-function findPostById(id){
-    return posts.find(post => post.id === parseInt(id));
-}
 
 module.exports.router = router;
-module.exports.findPostById = findPostById;
