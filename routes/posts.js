@@ -1,10 +1,12 @@
 const express = require('express');
 const _ = require("lodash");
 const {Post, validate} = require("../models/post");
+const {User} = require("../models/user");
 const auth = require("../middlewares/auth")
 const router = express.Router();
 
 router.get("/", (req, res) => {
+    
     res.send(posts);
 })
 
@@ -15,10 +17,12 @@ router.get("/:id", (req, res) => {
 })
 
 router.post("/", auth, async (req, res) => {
-    req.body.author = req.user._id;
     const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     
+    req.body.author = await User.findById(req.user._id);
+    if (!req.body.author) return res.status(400).send("Invalid User.");
+
     const post = new Post(_.pick(req.body, ["title", "text", "author"]));
     await post.save();
     res.send(post);

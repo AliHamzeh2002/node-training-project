@@ -1,22 +1,27 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-Joi.objectId = require('joi-objectid')(Joi)
 
 const postSchema = new mongoose.Schema({
         title:{
             type: String,
             required: true,
-            min: 4,
-            max: 1024
+            minlength: 4,
+            maxlength: 1024
         }, 
         text:{
             type: String,
             required: true,
-            min: 20,
+            minlength: 20,
         },
-        author:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+        author: { 
+            type: new mongoose.Schema({
+                username: {
+                    type: String,
+                    minlength: 3,
+                    maxlength: 256,
+                    required: true
+                }
+            }),
             required: true
         }
     },
@@ -29,7 +34,6 @@ function validatePost(post){
     const schema = Joi.object({
         title: Joi.string().min(4).max(1024).required(),
         text: Joi.string().min(20).required(),
-        author: Joi.objectId().required(),
     })
     return schema.validate(post);
 }
