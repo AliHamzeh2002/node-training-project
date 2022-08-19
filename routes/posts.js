@@ -10,22 +10,27 @@ router.get("/", async (req, res) => {
     if (req.query.sort === "created_at"){
         posts = await Post
             .find()
-            .select("-_id title text createdAt author.username")
+            .select("title text createdAt author.username")
             .sort("-createdAt")
     }
     else{
         posts = await Post
             .find()
-            .select("-_id title text createdAt author.username")
+            .select("title text createdAt author.username")
     }
 
     res.send(posts);
 })
 
-router.get("/:id", (req, res) => {
-    const post = findPostById(req.params.id);
-    if (!post) return res.status(404).send("Post with given id doesn't exist!");
-    res.send(post);
+router.get("/:id", async (req, res) => {
+    try{
+        const post = await Post.findById(req.params.id);
+        if (!post)  return res.status(404).send("Post Not Found");
+            res.send(post);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 })
 
 router.post("/", auth, async (req, res) => {
