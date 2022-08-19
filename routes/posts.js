@@ -1,13 +1,8 @@
 const express = require('express');
-const Joi = require("joi");
-const findUserById = require("./users").findUserById;
+const _ = require("lodash");
+const {Post, validate} = require("../models/post");
+const auth = require("../middlewares/auth")
 const router = express.Router();
-
-const posts = [
-    {id: 1, title: "test post", text:"test content", userId: 1}
-];
-
-let available_id = 2;
 
 router.get("/", (req, res) => {
     res.send(posts);
@@ -19,17 +14,13 @@ router.get("/:id", (req, res) => {
     res.send(post);
 })
 
-router.post("/", (req, res) => {
-    const { error } = validatePost(req.body);
+router.post("/", auth, async (req, res) => {
+    req.body.author = req.user._id;
+    const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     
-    const post = {id: available_id,
-                title: req.body.title,
-                text: req.body.text,
-                userId: req.body.userId
-    };
-    available_id++;
-    posts.push(post);
+    const post = new Post(_.pick(req.body, ["title", "text", "author"]));
+    await post.save();
     res.send(post);
 
 })

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+Joi.objectId = require('joi-objectid')(Joi)
 
 const postSchema = new mongoose.Schema({
         title:{
@@ -22,7 +23,7 @@ const postSchema = new mongoose.Schema({
     {timestamps: true}
 );
 
-const Post = mongoose.Model("Post", postSchema);
+const Post = mongoose.model("Post", postSchema);
 
 function validatePost(post){
     const schema = Joi.object({
@@ -30,6 +31,7 @@ function validatePost(post){
         text: Joi.string().min(20).required(),
         author: Joi.objectId().required(),
     })
+    return schema.validate(post);
 }
 
 exports.Post = Post;
