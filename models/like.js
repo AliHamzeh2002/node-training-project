@@ -2,28 +2,29 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 Joi.objectId = require('joi-objectid')(Joi)
 
-const likeSchema = new mongooseSchema({
-    post:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-        required: true
+const likeSchema = new mongoose.Schema({
+        postId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+            required: true
+        },
+        userId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        }
     },
-    user:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    }
-});
+    {timestamps: true}
+);
 
 const Like = mongoose.model("Like", likeSchema);
 
 function validateLike(like){
     const schema = Joi.object({
-        post: joi.objectId().required(),
-        user: joi.objectId().required(),
+        postId: Joi.objectId().required(),
     })
     return schema.validate(like);
 }
 
 exports.Like = Like;
-exports.validate = validateLike
+exports.validate = validateLike;
