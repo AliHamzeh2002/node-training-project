@@ -39,13 +39,16 @@ router.post("/", auth, async (req, res) => {
 
 })
 
-router.delete("/:id", (req, res) => {
-    const like = findLikesById(req.params.id);
-    if (!like) return res.status(404).send("Like with given id doesn't exist!");
-
-    const index = likes.indexOf(like);
-    likes.splice(index, 1);
-    res.send(like);
+router.delete("/:id", async (req, res) => {
+    try{
+        const like = await Like.findById(req.params.id);
+        if (!like) return res.status(404).send("like with given id doesn't exist!");
+        await like.remove()
+        res.send(like);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 });
 
 module.exports.router = router;
