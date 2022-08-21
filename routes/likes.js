@@ -10,10 +10,15 @@ router.get("/", async (req, res) => {
     res.send(likes);
 })
 
-router.get("/:id", (req, res) => {
-    const like = findLikesById(req.params.id);
-    if (!like) return res.status(404).send("like with given id doesn't exist!");
-    res.send(like);
+router.get("/:id", async (req, res) => {
+    try{
+        const like = await Like.findById(req.params.id);
+        if (!like) return res.status(404).send("like with given id doesn't exist!");
+        res.send(like);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 })
 
 router.post("/", auth, async (req, res) => {
