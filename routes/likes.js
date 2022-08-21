@@ -23,6 +23,10 @@ router.post("/", auth, async (req, res) => {
     if (!isPostValid) return res.status(404).send("Post not Found.");
     req.body.userId = req.user._id;
 
+    const identicalLikes = await Like.find({postId: req.body.postId, userId: req.body.userId});
+    if (identicalLikes.length)
+        return res.status(400).send("Already liked this");
+
     const like = new Like(_.pick(req.body, ["postId", "userId"]));
     await like.save();
     res.send(like);
