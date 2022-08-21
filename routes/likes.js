@@ -5,7 +5,8 @@ const {Like, validate} = require("../models/like");
 const {Post} = require("../models/post");
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+    const likes = await Like.find();
     res.send(likes);
 })
 
