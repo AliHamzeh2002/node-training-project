@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey" : "systemPrivateKey"    
+    "jwtPrivateKey" : "systemPrivateKey",
+    "itemsInPage": "itemsInPage"
 }

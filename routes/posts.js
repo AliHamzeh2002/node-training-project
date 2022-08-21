@@ -1,21 +1,28 @@
 const express = require('express');
 const _ = require("lodash");
+const config = require("config");
 const {Post, validate} = require("../models/post");
 const {User} = require("../models/user");
 const auth = require("../middlewares/auth");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+    const itemsInPage = config.get("itemsInPage");
+    const page = req.query.page ?? 1;
     let posts;
     if (req.query.sort === "created_at"){
         posts = await Post
             .find()
             .select("title text createdAt author.username")
+            .skip((page - 1) * itemsInPage)
+            .limit(itemsInPage)
             .sort("-createdAt")
     }
     else{
         posts = await Post
             .find()
+            .skip((page - 1) * itemsInPage)
+            .limit(itemsInPage)
             .select("title text createdAt author.username")
     }
 
