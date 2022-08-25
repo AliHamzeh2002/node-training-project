@@ -2,16 +2,15 @@ const express = require('express');
 const _ = require("lodash")
 const config = require("config");
 const auth = require("../middlewares/auth");
+const paginate = require("../middlewares/paginate")
 const {Like, validate} = require("../models/like");
 const {Post} = require("../models/post");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const itemsInPage = config.get("itemsInPage")
-    const page = req.query.page ?? 1;
     const likes = await Like.find()
-                            .skip((page - 1) * itemsInPage)
-                            .limit(itemsInPage);
+                            .skip((req.query.page - 1) * req.query.size)
+                            .limit(req.query.size);
     res.send(likes);
 })
 

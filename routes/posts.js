@@ -4,16 +4,15 @@ const config = require("config");
 const {Post, validate} = require("../models/post");
 const {User} = require("../models/user");
 const auth = require("../middlewares/auth");
+const paginate = require("../middlewares/paginate")
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const itemsInPage = config.get("itemsInPage");
-    const page = req.query.page ?? 1;
     const posts = await Post
         .find()
         .select("title text createdAt author.username")
-        .skip((page - 1) * itemsInPage)
-        .limit(itemsInPage)
+        .skip((req.query.page - 1) * req.query.size)
+        .limit(req.query.size)
         .sort(req.query.sort)
 
     res.send(posts);

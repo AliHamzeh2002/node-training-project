@@ -2,17 +2,16 @@ const express = require('express');
 const _ = require("lodash");
 const config = require("config");
 const bcrypt = require("bcrypt");
-const {validate, User} = require("../models/user.js")
-const auth = require("../middlewares/auth.js")
+const {validate, User} = require("../models/user")
+const auth = require("../middlewares/auth")
+const paginate = require("../middlewares/paginate");
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-    const page = req.query.page ??  1;
-    const itemsInPage = config.get("itemsInPage");
+router.get("/", paginate, async (req, res) => {
     const users = await User
                     .find()
-                    .skip((page - 1) * itemsInPage)
-                    .limit(itemsInPage)
+                    .skip((req.query.page - 1) * req.query.size)
+                    .limit(req.query.size)
                     .select("username age email -_id");
     res.send(users);
 });
