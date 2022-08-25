@@ -18,23 +18,25 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    const { error } = validate(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-    
-    let user = await User.findOne({$or:[{email: req.body.email},
-                                 {username: req.body.username}]});
-    if(user) return res.status(400).send("Email or Username Already Registered.");
+    try{
+        const { error } = validate(req.body);
+        if(error) return res.status(400).send(error.details[0].message);
+        
+        user = new User(_.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]));
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(req.body.password, salt);
 
-    user = new User(_.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]));
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(req.body.password, salt);
-
-    await user.save();
-    
-    const token = user.generateAuthToken();
-    res
-        .header("x-auth-token", token)
-        .send(_.pick(user, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
+        await user.save();
+        
+        const token = user.generateAuthToken();
+        res.header("x-auth-token", token)
+           .send(_.pick(user, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
+    }
+    catch(err){
+        if (err.name === "ValidationError")
+            return res.status(400).send(err.message);
+        return res.status(500).send(err.message);
+    }
 });
 
 router.get("/me", auth, async(req, res) => {

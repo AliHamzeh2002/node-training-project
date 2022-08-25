@@ -22,9 +22,11 @@ const userSchema = new mongoose.Schema({
         age:{
             type: Number,
             min: 10,
-            max: 200,
-            get: v => Math.round(v),
-            set: v => Math.round(v)
+            max: 1000,
+            validate:{
+                validator: Number.isInteger,
+                message: "age should be an Integer"
+            }
         },
 
         email:{
@@ -37,13 +39,14 @@ const userSchema = new mongoose.Schema({
         },
 
         phoneNumber:{
-            type: Number,
+            type: String,
             required: true,
             validate:{
-                validator: function(val){
-                    return val.toString().length < 11
+                validator: function(value){
+                    let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+                    return regex.test(value);
                 },
-                message: "Phone number should have 11 characters"
+                message: "Phone Number Format Is Wrong."
             }
         },
 
@@ -75,8 +78,8 @@ function validateUser(user){
         username: Joi.string().min(2).max(255).required(),
         age: Joi.number().integer().greater(10),
         email: Joi.string().min(2).max(255).email().required(),
-        phoneNumber: Joi.number().required(),
-        password: Joi.string().min(5).max(255).required()
+        phoneNumber: Joi.string().required(),
+        password: Joi.string().min(5).max(1024).required()
     });
     return schema.validate(user);
 }
