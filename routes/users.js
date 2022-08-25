@@ -12,7 +12,7 @@ router.get("/", paginate, async (req, res) => {
                     .find()
                     .skip((req.query.page - 1) * req.query.size)
                     .limit(req.query.size)
-                    .select("username age email -_id");
+                    .select("-password");
     res.send(users);
 });
 
@@ -38,33 +38,38 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.get("/me", auth, async(req, res) => {
+router.get("/:id", auth, async(req, res) => {
     const user = await User
-            .findById(req.user._id)
+            .findById(req.params.id)
             .select("-password");
     res.send(user);
 });
 
-router.delete("/me", auth, async(req, res) => {
+router.delete("/:id", auth, async(req, res) => {
+    if (req.user._id !== req.params.id)
+        return res.status(403).send("Access Denied");
     const user = await User.findByIdAndDelete(req.user._id)
                             .select("-password");
     res.send(user);
 });
 
-router.put("/me", auth, async (req, res) => {
-    let users = await User.find({$or:[{email: req.body.email}, {username: req.body.username}]});
-    if (users.length > 1 || (users.length && users[0].id !== req.user._id))
-        return res.status(400).send("Email or Username Already Used.");
-    
-    let updatedData = _.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]);
-    const salt = await bcrypt.genSalt(10);
-    updatedData.password = await bcrypt.hash(req.body.password, salt);
+router.put("/:id", auth, async (req, res) => {
+    try{
+        let updatedData = _.pick(req.body, ["name", "username", "age", "email", "phoneNumber"]);
+        const salt = await bcrypt.genSalt(10);
+        updatedData.password = await bcrypt.hash(req.body.password, salt);
 
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true})
-    const token = updatedUser.generateAuthToken();
-    res
-        .header("x-auth-token", token)
-        .send(_.pick(updatedUser, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true})
+        const token = updatedUser.generateAuthToken();
+        res
+            .header("x-auth-token", token)
+            .send(_.pick(updatedUser, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
+    }
+    catch(err){
+        if (err.name === "ValidationError" || err.code === 11000)
+            return res.status(400).send(err.message);
+        return res.status(500).send(err.message);
+    }
 })
 
 module.exports.router = router;
