@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
            .send(_.pick(user, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
     }
     catch(err){
-        if (err.name === "ValidationError")
+        if (err.name === "ValidationError" || err.code === 11000)
             return res.status(400).send(err.message);
         return res.status(500).send(err.message);
     }

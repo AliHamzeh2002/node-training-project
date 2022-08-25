@@ -56,16 +56,25 @@ const userSchema = new mongoose.Schema({
             minlength: 5,
             maxlength: 1024
         },
+
+        posts:[{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
+        }],
+
+        likes:[{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Like"
+        }]
     },
     {timestamps: true}
 );
 
 userSchema.methods.generateAuthToken = function(){
-    const token = jwt.sign({
-        _id: this._id,
-        username: this.username,
-        },
-        config.get("jwtPrivateKey")
+    const token = jwt.sign(
+        {_id: this._id,username: this.username,},
+        config.get("jwtPrivateKey"),
+        {expiresIn: "1h"}
     );
     return token;
 }
