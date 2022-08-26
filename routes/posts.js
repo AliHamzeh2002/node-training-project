@@ -34,29 +34,30 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", auth, async (req, res) => {
-    const { error } = validate(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-    
-    req.body.author = await User.findById(req.user._id);
-    if (!req.body.author) return res.status(400).send("Invalid User.");
-
-    const post = new Post(_.pick(req.body, ["title", "text", "author"]));
-    await post.save();
-    res.send(post);
-
+    try{        
+        const post = new Post({
+            title: req.body.title,
+            text: req.body.text,
+            author: req.user
+        });
+        req.user.posts.push(post._id);
+        await req.user.save();
+        await post.save();
+        res.send(post);
+    }
+    catch(err){
+        if (err.name === "ValidationError")
+            return res.status(400).send(err.message);
+        return res.status(500).send(err.message);
+    }
 })
 
 router.put("/:id", auth, async (req, res) => {
-    const { error } = validate(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+    try{    
 
-    author = await User.findById(req.user._id);
-    if (!author) return res.status(400).send("Invalid User.");
-
-    try{
         const post = await Post.findById(req.params.id);
         if (!post)  return res.status(404).send("Post Not Found");
-        if (!author._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
+        if (req.user._id !== req.params.id)  return res.status(403).send("You can't change this post.");
 
         post.title = req.body.title;
         post.text = req.body.text;
@@ -64,23 +65,30 @@ router.put("/:id", auth, async (req, res) => {
         res.send(post);
     }
     catch(err){
-        res.send(err.message);
+        if (err.name === "ValidationError")
+            return res.status(400).send(err.message);
+        return res.status(500).send(err.message);
     }
 })
 
 router.delete("/:id", auth, async (req, res) => {
-    author = await User.findById(req.user._id);
-    if (!author) return res.status(400).send("Invalid User.");
-
     try{
+
         const post = await Post.findById(req.params.id);
         if (!post)  return res.status(404).send("Post Not Found");
-        if (!author._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
+        if (!req.user._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
+
+        const postIndex = req.user.posts.indexOf(post._id);
+        req.user.posts.splice(postIndex, 1);
+
+        await req.user.save();
         await post.remove();
         res.send(post);
     }
     catch(err){
-        res.send(err.message);
+        if (err.name === "ValidationError")
+            return res.status(400).send(err.message);
+        return res.status(500).send(err.message);
     }
 });
 

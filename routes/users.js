@@ -13,7 +13,8 @@ router.get("/", paginate, async (req, res) => {
                         .find()
                         .skip((req.query.page - 1) * req.query.size)
                         .limit(req.query.size)
-                        .select("-password");
+                        .select("-password")
+                        .populate("posts", "title");
         res.send(users);
     }
     catch(err){
@@ -47,7 +48,8 @@ router.get("/:id", auth, async(req, res) => {
     try{
         const user = await User
                 .findById(req.params.id)
-                .select("-password");
+                .select("-password")
+                .populate("posts", "title");
         res.send(user);
     }
     catch(err){
@@ -64,7 +66,7 @@ router.delete("/:id", auth, async(req, res) => {
         res.send(user);
     }
     catch(err){
-        res.send(err.message);
+        res.status(500).send(err.message);
     }
 });
 
