@@ -14,6 +14,7 @@ router.get("/", paginate, async (req, res) => {
             .skip((req.query.page - 1) * req.query.size)
             .limit(req.query.size)
             .sort(req.query.sort)
+            .populate("author", "username");
 
         res.send(posts);
     }
@@ -24,12 +25,13 @@ router.get("/", paginate, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try{
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(req.params.id)
+                                .populate("author", "username");
         if (!post)  return res.status(404).send("Post Not Found");
             res.send(post);
     }
     catch(err){
-        res.send(err.message);
+        res.status(500).send(err.message);
     }
 })
 
@@ -73,7 +75,6 @@ router.put("/:id", auth, async (req, res) => {
 
 router.delete("/:id", auth, async (req, res) => {
     try{
-
         const post = await Post.findById(req.params.id);
         if (!post)  return res.status(404).send("Post Not Found");
         if (!req.user._id.equals(post.author._id))  return res.status(403).send("You can't change this post.");
