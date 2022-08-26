@@ -44,6 +44,22 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.post("/login", async(req, res) => {
+    try{
+        const user = await User.findOne({$or: [{email: req.body.emailOrName}, {username: req.body.emailOrName}]});
+        if (!user)  return res.status(400).send("Wrong Data");
+        const isPassValid = await bcrypt.compare(req.body.password, user.password);
+        if (!isPassValid)   return res.status(400).send("Wrong Data");
+
+        const token = user.generateAuthToken();
+        res.header("x-auth-token", token)
+            .send("Login successful.");
+    }
+    catch(err){
+        res.status(500).send(err.message);
+    }
+});
+
 router.get("/:id", auth, async(req, res) => {
     try{
         const user = await User
