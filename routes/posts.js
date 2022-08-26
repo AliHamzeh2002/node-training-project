@@ -7,20 +7,24 @@ const auth = require("../middlewares/auth");
 const paginate = require("../middlewares/paginate")
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-    const posts = await Post
-        .find()
-        .skip((req.query.page - 1) * req.query.size)
-        .limit(req.query.size)
-        .sort(req.query.sort)
+router.get("/", paginate, async (req, res) => {
+    try{
+        const posts = await Post
+            .find()
+            .skip((req.query.page - 1) * req.query.size)
+            .limit(req.query.size)
+            .sort(req.query.sort)
 
-    res.send(posts);
+        res.send(posts);
+    }
+    catch(err){
+        res.status(500).send(err.message);
+    }
 })
 
 router.get("/:id", async (req, res) => {
     try{
-        const post = await Post.findById(req.params.id)
-                                .select("title text createdAt author.username");
+        const post = await Post.findById(req.params.id);
         if (!post)  return res.status(404).send("Post Not Found");
             res.send(post);
     }
