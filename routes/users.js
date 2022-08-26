@@ -8,12 +8,17 @@ const paginate = require("../middlewares/paginate");
 const router = express.Router();
 
 router.get("/", paginate, async (req, res) => {
-    const users = await User
-                    .find()
-                    .skip((req.query.page - 1) * req.query.size)
-                    .limit(req.query.size)
-                    .select("-password");
-    res.send(users);
+    try{
+        const users = await User
+                        .find()
+                        .skip((req.query.page - 1) * req.query.size)
+                        .limit(req.query.size)
+                        .select("-password");
+        res.send(users);
+    }
+    catch(err){
+        res.status(500).send(err.message);
+    }
 });
 
 router.post("/", async (req, res) => {
@@ -39,18 +44,28 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:id", auth, async(req, res) => {
-    const user = await User
-            .findById(req.params.id)
-            .select("-password");
-    res.send(user);
+    try{
+        const user = await User
+                .findById(req.params.id)
+                .select("-password");
+        res.send(user);
+    }
+    catch(err){
+        res.status(500).send(err.message);
+    }
 });
 
 router.delete("/:id", auth, async(req, res) => {
-    if (req.user._id !== req.params.id)
-        return res.status(403).send("Access Denied");
-    const user = await User.findByIdAndDelete(req.user._id)
-                            .select("-password");
-    res.send(user);
+    try{
+        if (req.user._id !== req.params.id)
+            return res.status(403).send("Access Denied");
+        const user = await User.findByIdAndDelete(req.user._id)
+                                .select("-password");
+        res.send(user);
+    }
+    catch(err){
+        res.send(err.message);
+    }
 });
 
 router.put("/:id", auth, async (req, res) => {

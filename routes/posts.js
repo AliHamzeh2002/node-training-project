@@ -10,7 +10,6 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     const posts = await Post
         .find()
-        .select("title text createdAt author.username")
         .skip((req.query.page - 1) * req.query.size)
         .limit(req.query.size)
         .sort(req.query.sort)
