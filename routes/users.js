@@ -61,8 +61,7 @@ router.put("/:id", auth, async (req, res) => {
 
         const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true})
         const token = updatedUser.generateAuthToken();
-        res
-            .header("x-auth-token", token)
+        res.header("x-auth-token", token)
             .send(_.pick(updatedUser, ["_id" ,"name", "username", "age", "email", "phoneNumber"]));
     }
     catch(err){
