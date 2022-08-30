@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
         name:{
             type: String,
             required: true,
+            trim: true,
             minlength: 2,
             maxlength: 50
         },
@@ -14,6 +15,7 @@ const userSchema = new mongoose.Schema({
         username:{
             type: String,
             required: true,
+            trim: true,
             unique: true,
             minlength: 2,
             maxlength: 50
@@ -32,10 +34,18 @@ const userSchema = new mongoose.Schema({
         email:{
             type: String,
             required: true,
-            uniquie: true,
+            trim: true,
             lowercase: true,
+            unique: true,
             minlength: 5,
             maxlength: 255,
+            validate:{
+                validator: function(email){
+                           let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                           return regex.test(email);
+                },
+                message: "Email Format Is Wrong"
+            },
         },
 
         phoneNumber:{
@@ -81,17 +91,4 @@ userSchema.methods.generateAuthToken = function(){
 
 const User = mongoose.model("User", userSchema);
 
-function validateUser(user){
-    const schema = Joi.object({
-        name: Joi.string().min(2).max(255).required(),
-        username: Joi.string().min(2).max(255).required(),
-        age: Joi.number().integer().greater(10),
-        email: Joi.string().min(2).max(255).email().required(),
-        phoneNumber: Joi.string().required(),
-        password: Joi.string().min(5).max(1024).required()
-    });
-    return schema.validate(user);
-}
-
 exports.User = User;
-exports.validate = validateUser;
