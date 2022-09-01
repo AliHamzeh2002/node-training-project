@@ -97,11 +97,11 @@
         "tags": [
           "User"
         ],
-        "description": "To get all the users in the given page and size.",
+        "description": "to create a new user.",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "the new user object.",
+            "description": "the new user object + user token in header with x-auth-token key.",
             "content": {
               "application/json": {
                 "schema": {
@@ -152,40 +152,12 @@
         }
       }
     },
-    "/api/users/login": {
-      "post": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "emailOrName": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/users/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "to get a user data by given id.",
         "parameters": [
           {
             "name": "id",
@@ -193,7 +165,60 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "description": "id of the user."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the user object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
             }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "to update a user by id and the user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id of the user."
           },
           {
             "name": "x-auth-token",
@@ -205,7 +230,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the new user object + the new user token in header with x-auth-token key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -219,10 +268,29 @@
           "500": {
             "description": "Internal Server Error"
           }
+        },
+        "requestBody": {
+          "description": "posts field will be ignored.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "to delete a user data by given id and a the user",
         "parameters": [
           {
             "name": "id",
@@ -230,7 +298,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the user."
           },
           {
             "name": "x-auth-token",
@@ -242,7 +311,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the user object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -260,35 +353,43 @@
             "description": "Internal Server Error"
           }
         }
-      },
-      "put": {
-        "description": "",
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "description": "to login a user.",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "emailOrName",
+            "in": "body",
             "schema": {
-              "type": "string"
-            }
+              "type": "object",
+              "properties": {
+                "emailOrName": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "the username or email of the user.",
+            "required": true
           },
           {
-            "name": "x-auth-token",
-            "in": "header",
+            "name": "password",
+            "in": "body",
+            "description": "the password of the user.",
+            "required": true,
             "schema": {
-              "type": "string"
+              "type": "object",
+              "properties": {}
             }
           }
         ],
         "responses": {
           "400": {
             "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -300,19 +401,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "example": "any"
-                  },
-                  "username": {
-                    "example": "any"
-                  },
-                  "age": {
-                    "example": "any"
-                  },
-                  "email": {
-                    "example": "any"
-                  },
-                  "phoneNumber": {
+                  "emailOrName": {
                     "example": "any"
                   },
                   "password": {
