@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const m2s = require("mongoose-to-swagger");
 
 const userSchema = new mongoose.Schema({
         name:{
@@ -90,5 +90,7 @@ userSchema.methods.generateAuthToken = function(){
 }
 
 const User = mongoose.model("User", userSchema);
-
+const userSwaggerSchema = m2s(User);
+console.log(userSwaggerSchema);
 exports.User = User;
+
