@@ -91,6 +91,6 @@ userSchema.methods.generateAuthToken = function(){
 
 const User = mongoose.model("User", userSchema);
 const userSwaggerSchema = m2s(User);
-console.log(userSwaggerSchema);
+
 exports.User = User;
 

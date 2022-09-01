@@ -6,16 +6,37 @@ const userService = require("../services/user");
 const router = express.Router();
 
 router.get("/", paginate, async (req, res) => {
+    /*
+        #swagger.tags = ['User']
+        #swagger.description = 'To get all the users in the given page and size.'
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/User" }],
+            description: 'an array of users'
+        } 
+    */
     try{
         const users = await userService.getAllUsers(req);
-        res.send(users);
+        return res.send(users);
     }
     catch(err){
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 });
 
 router.post("/", async (req, res) => {
+    /*
+        #swagger.tags = ['User']
+        #swagger.description = 'To get all the users in the given page and size.'
+        #swagger.requestBody = {
+            description: "posts field will be ignored and assigned as empty array.",
+            required: true,
+            schema: { $ref: "#/definitions/User" }
+        }
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/User" }],
+            description: 'the new user object + user token in header with x-auth-token key.'
+        } 
+    */
     try{
         const {user, token} = await userService.signUpUser(req);
         res.header("x-auth-token", token)
