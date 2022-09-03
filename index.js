@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const swaggerUi = require('swagger-ui-express')
-const swaggerFile = require('./swagger-output.json')
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger-output.json');
+const {isDeveloper, auth} = require("./middlewares/auth")
 const users = require("./routes/users").router;
 const posts = require("./routes/posts").router;
 const likes = require("./routes/likes").router;
@@ -13,7 +14,8 @@ app.use(express.json());
 app.use("/api/users", users);
 app.use("/api/posts", posts);
 app.use("/api/likes", likes);
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+//app.use('/doc', [auth, isDeveloper, swaggerUi.serve], swaggerUi.setup(swaggerFile)); for authentication in docs
 
 
 const port = process.env.PORT ?? 3000; 

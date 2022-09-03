@@ -1,6 +1,6 @@
 const express = require('express');
 const _ = require("lodash");
-const auth = require("../middlewares/auth")
+const {auth} = require("../middlewares/auth")
 const paginate = require("../middlewares/paginate");
 const userService = require("../services/user");
 const router = express.Router();

@@ -1,6 +1,6 @@
 const express = require('express');
 const postService = require("../services/post");
-const auth = require("../middlewares/auth");
+const {auth} = require("../middlewares/auth");
 const paginate = require("../middlewares/paginate")
 const router = express.Router();
 

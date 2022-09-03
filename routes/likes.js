@@ -1,5 +1,5 @@
 const express = require('express');
-const auth = require("../middlewares/auth");
+const {auth} = require("../middlewares/auth");
 const paginate = require("../middlewares/paginate");
 const likeService = require("../services/like");
 
