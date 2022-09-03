@@ -48,14 +48,24 @@ const doc = {
         Post:{
             $title: "title",
             $text: "sample text for the post...",
-            $author: {$ref: "#/definitions/User"},
+            $author: {
+                description: "only the author's id is saved in model",
+                $ref: "#/definitions/User"
+            },
             likes:[{
+                description: "only the likes' ids are saved in model",
                 $ref: "#/definitions/Like"
             }]
         },
         Like:{
-            $postId: {$ref: "#/definitions/Post"},
-            $userId: {$ref: "#/definitions/User"},
+            $postId: {
+                description: "only id is saved",
+                $ref: "#/definitions/Post"
+            },
+            $userId: {
+                description: "only id is saved",
+                $ref: "#/definitions/User"
+            },
         }
 
     }

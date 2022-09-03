@@ -357,6 +357,9 @@
     },
     "/api/users/login": {
       "post": {
+        "tags": [
+          "User"
+        ],
         "description": "to login a user.",
         "parameters": [
           {
@@ -416,7 +419,10 @@
     },
     "/api/posts/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Post"
+        ],
+        "description": "To get all the posts in the given page and size.",
         "parameters": [
           {
             "name": "page",
@@ -445,7 +451,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "an array of posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -453,7 +483,10 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Post"
+        ],
+        "description": "to create a new post with a user token.",
         "parameters": [
           {
             "name": "x-auth-token",
@@ -465,7 +498,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the new post object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -481,18 +538,17 @@
           }
         },
         "requestBody": {
+          "description": "no need for likes and author field.",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "example": "any"
-                  },
-                  "text": {
-                    "example": "any"
-                  }
-                }
+                "$ref": "#/components/schemas/Post"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Post"
               }
             }
           }
@@ -501,7 +557,10 @@
     },
     "/api/posts/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Post"
+        ],
+        "description": "to get a post data by given id.",
         "parameters": [
           {
             "name": "id",
@@ -509,12 +568,37 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the post."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the post object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found"
@@ -525,7 +609,10 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Post"
+        ],
+        "description": "to update a post by id and the user",
         "parameters": [
           {
             "name": "id",
@@ -533,7 +620,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the post."
           },
           {
             "name": "x-auth-token",
@@ -545,7 +633,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the new post object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -564,25 +676,27 @@
           }
         },
         "requestBody": {
+          "description": "no need for likes and author field.",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "example": "any"
-                  },
-                  "text": {
-                    "example": "any"
-                  }
-                }
+                "$ref": "#/components/schemas/Post"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Post"
               }
             }
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Post"
+        ],
+        "description": "to delete a post data by given id and a the user",
         "parameters": [
           {
             "name": "id",
@@ -590,7 +704,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the post."
           },
           {
             "name": "x-auth-token",
@@ -602,7 +717,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the deleted post object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -624,7 +763,10 @@
     },
     "/api/likes/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Like"
+        ],
+        "description": "To get all the likes in the given page and size.",
         "parameters": [
           {
             "name": "page",
@@ -653,7 +795,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "an array of likes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -661,7 +827,10 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Like"
+        ],
+        "description": "to create a new like with a valid user token",
         "parameters": [
           {
             "name": "x-auth-token",
@@ -673,7 +842,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the new like object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -689,15 +882,17 @@
           }
         },
         "requestBody": {
+          "description": "userId will be interreted by token and postId will be only an Id!",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "postId": {
-                    "example": "any"
-                  }
-                }
+                "$ref": "#/components/schemas/Like"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Like"
               }
             }
           }
@@ -706,7 +901,10 @@
     },
     "/api/likes/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Like"
+        ],
+        "description": "to get a like data by given id.",
         "parameters": [
           {
             "name": "id",
@@ -714,12 +912,37 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the like."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the like object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found"
@@ -727,7 +950,10 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Like"
+        ],
+        "description": "to delete a like data by given id and a the user",
         "parameters": [
           {
             "name": "id",
@@ -735,7 +961,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "id of the like."
           },
           {
             "name": "x-auth-token",
@@ -747,7 +974,31 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "the deleted like object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Like"
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"

@@ -5,6 +5,14 @@ const paginate = require("../middlewares/paginate")
 const router = express.Router();
 
 router.get("/", paginate, async (req, res) => {
+    /*
+        #swagger.tags = ['Post']
+        #swagger.description = 'To get all the posts in the given page and size.'
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/Post" }],
+            description: 'an array of posts'
+        } 
+    */
     try{
         const posts = await postService.getAllPosts(req);
         res.send(posts);
@@ -15,6 +23,15 @@ router.get("/", paginate, async (req, res) => {
 })
 
 router.get("/:id", async (req, res) => {
+    /*
+        #swagger.tags = ['Post']
+        #swagger.description = 'to get a post data by given id."
+        #swagger.parameters["id"] = {description: "id of the post."}
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/Post" }],
+            description: 'the post object'
+        } 
+    */
     try{
         const post = await postService.getOnePost(req);
         res.send(post);
@@ -27,6 +44,19 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", auth, async (req, res) => {
+    /*
+        #swagger.tags = ['Post']
+        #swagger.description = 'to create a new post with a user token.'
+        #swagger.requestBody = {
+            description: "no need for likes and author field.",
+            required: true,
+            schema: { $ref: "#/definitions/Post" }
+        }
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/Post" }],
+            description: 'the new post object'
+        } 
+    */
     try{        
         const post = await postService.createPost(req);
         res.send(post);
@@ -39,6 +69,20 @@ router.post("/", auth, async (req, res) => {
 })
 
 router.put("/:id", auth, async (req, res) => {
+    /*
+        #swagger.tags = ['Post']
+        #swagger.description = 'to update a post by id and the user's token.'
+        #swagger.parameters["id"] = {description: "id of the post."}
+        #swagger.requestBody = {
+            description: "no need for likes and author field.",
+            required: true,
+            schema: { $ref: "#/definitions/Post" }
+        }
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/Post" }],
+            description: 'the new post object.'
+        } 
+    */
     try{    
 
         const post = await postService.updatePost(req);
@@ -56,6 +100,15 @@ router.put("/:id", auth, async (req, res) => {
 })
 
 router.delete("/:id", auth, async (req, res) => {
+    /*
+        #swagger.tags = ['Post']
+        #swagger.description = 'to delete a post data by given id and a the user's valid token.'
+        #swagger.parameters["id"] = {description: "id of the post."}
+        #swagger.responses[200] = { 
+            schema: [{ $ref: "#/definitions/Post" }],
+            description: 'the deleted post object'
+        } 
+    */
     try{
         const post = await postService.deletePost(req);
         res.send(post);

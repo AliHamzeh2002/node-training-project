@@ -99,19 +99,20 @@ router.put("/:id", auth, async (req, res) => {
 
 router.post("/login", async(req, res) => {
     /* 
-    #swagger.description = "to login a user."
-    #swagger.parameters['emailOrName'] = {
-               in: 'body',
-               type: 'string',
-               description: 'the username or email of the user.',
-               required: true,
-    } 
-    #swagger.parameters['password'] = {
-               in: 'body',
-               type: 'string',
-               description: 'the password of the user.',
-               required: true,
-    } 
+        #swagger.tags = ['User']
+        #swagger.description = "to login a user."
+        #swagger.parameters['emailOrName'] = {
+                in: 'body',
+                type: 'string',
+                description: 'the username or email of the user.',
+                required: true,
+        } 
+        #swagger.parameters['password'] = {
+                in: 'body',
+                type: 'string',
+                description: 'the password of the user.',
+                required: true,
+        } 
     */
     try{
         const {token} = await userService.loginUser(req);
