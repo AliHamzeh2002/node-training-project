@@ -135,17 +135,16 @@
           }
         },
         "requestBody": {
-          "description": "posts field will be ignored and assigned as empty array.",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/AddUser"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/AddUser"
               }
             }
           }
@@ -270,17 +269,16 @@
           }
         },
         "requestBody": {
-          "description": "posts field will be ignored.",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/AddUser"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/AddUser"
               }
             }
           }
@@ -538,17 +536,16 @@
           }
         },
         "requestBody": {
-          "description": "no need for likes and author field.",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Post"
+                "$ref": "#/components/schemas/AddPost"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/Post"
+                "$ref": "#/components/schemas/AddPost"
               }
             }
           }
@@ -676,17 +673,16 @@
           }
         },
         "requestBody": {
-          "description": "no need for likes and author field.",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Post"
+                "$ref": "#/components/schemas/AddPost"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/Post"
+                "$ref": "#/components/schemas/AddPost"
               }
             }
           }
@@ -882,17 +878,16 @@
           }
         },
         "requestBody": {
-          "description": "userId will be interreted by token and postId will be only an Id!",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Like"
+                "$ref": "#/components/schemas/AddLike"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/Like"
+                "$ref": "#/components/schemas/AddLike"
               }
             }
           }
@@ -953,7 +948,7 @@
         "tags": [
           "Like"
         ],
-        "description": "to delete a like data by given id and a the user",
+        "description": "to delete a like data by given id and the user",
         "parameters": [
           {
             "name": "id",
@@ -1125,14 +1120,80 @@
         "xml": {
           "name": "Like"
         }
-      }
-    },
-    "securitySchemes": {
-      "apiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-KEY",
-        "description": "any description..."
+      },
+      "AddUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ali"
+          },
+          "username": {
+            "type": "string",
+            "example": "username1"
+          },
+          "age": {
+            "type": "number",
+            "example": 29
+          },
+          "email": {
+            "type": "string",
+            "example": "felan@felan.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "01234567890"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "name",
+          "username",
+          "email",
+          "phoneNumber",
+          "password"
+        ],
+        "xml": {
+          "name": "AddUser"
+        }
+      },
+      "AddPost": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "title"
+          },
+          "text": {
+            "type": "string",
+            "example": "sample text for the post..."
+          }
+        },
+        "required": [
+          "title",
+          "text"
+        ],
+        "xml": {
+          "name": "AddPost"
+        }
+      },
+      "AddLike": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "example": "123456789"
+          }
+        },
+        "required": [
+          "postId"
+        ],
+        "xml": {
+          "name": "AddLike"
+        }
       }
     }
   }

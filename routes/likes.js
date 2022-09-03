@@ -48,9 +48,8 @@ router.post("/", auth, async (req, res) => {
         #swagger.tags = ['Like']
         #swagger.description = 'to create a new like with a valid user token'
         #swagger.requestBody = {
-            description: "userId will be interreted by token and postId will be only an Id!",
             required: true,
-            schema: { $ref: "#/definitions/Like" }
+            schema: { $ref: "#/definitions/AddLike" }
         }
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/Like" }],
@@ -74,7 +73,7 @@ router.post("/", auth, async (req, res) => {
 router.delete("/:id", auth,  async (req, res) => {
     /*
         #swagger.tags = ['Like']
-        #swagger.description = 'to delete a like data by given id and a the user's valid token.'
+        #swagger.description = 'to delete a like data by given id and the user's valid token.'
         #swagger.parameters["id"] = {description: "id of the like."}
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/Like" }],

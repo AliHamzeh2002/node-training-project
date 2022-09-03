@@ -48,9 +48,8 @@ router.post("/", auth, async (req, res) => {
         #swagger.tags = ['Post']
         #swagger.description = 'to create a new post with a user token.'
         #swagger.requestBody = {
-            description: "no need for likes and author field.",
             required: true,
-            schema: { $ref: "#/definitions/Post" }
+            schema: { $ref: "#/definitions/AddPost" }
         }
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/Post" }],
@@ -74,9 +73,8 @@ router.put("/:id", auth, async (req, res) => {
         #swagger.description = 'to update a post by id and the user's token.'
         #swagger.parameters["id"] = {description: "id of the post."}
         #swagger.requestBody = {
-            description: "no need for likes and author field.",
             required: true,
-            schema: { $ref: "#/definitions/Post" }
+            schema: { $ref: "#/definitions/AddPost" }
         }
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/Post" }],
@@ -121,7 +119,6 @@ router.delete("/:id", auth, async (req, res) => {
         return res.status(500).send(err.message);
     }
 });
-
 
 
 module.exports.router = router;

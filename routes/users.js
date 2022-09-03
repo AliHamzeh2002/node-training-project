@@ -49,9 +49,8 @@ router.post("/", async (req, res) => {
         #swagger.tags = ['User']
         #swagger.description = 'to create a new user.'
         #swagger.requestBody = {
-            description: "posts field will be ignored and assigned as empty array.",
             required: true,
-            schema: { $ref: "#/definitions/User" }
+            schema: { $ref: "#/definitions/AddUser" }
         }
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/User" }],
@@ -76,9 +75,8 @@ router.put("/:id", auth, async (req, res) => {
         #swagger.description = 'to update a user by id and the user's token.'
         #swagger.parameters["id"] = {description: "id of the user."}
         #swagger.requestBody = {
-            description: "posts field will be ignored.",
             required: true,
-            schema: { $ref: "#/definitions/User" }
+            schema: { $ref: "#/definitions/AddUser" }
         }
         #swagger.responses[200] = { 
             schema: [{ $ref: "#/definitions/User" }],

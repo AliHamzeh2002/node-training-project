@@ -25,14 +25,6 @@ const doc = {
             "description": "Endpoints"
         }
     ],
-    securityDefinitions: {
-        apiKeyAuth:{
-            type: "apiKey",
-            in: "header",       
-            name: "X-API-KEY",  
-            description: "any description..."
-        }
-    },
     definitions: {
         User:{
             $name: "ali",
@@ -49,24 +41,36 @@ const doc = {
             $title: "title",
             $text: "sample text for the post...",
             $author: {
-                description: "only the author's id is saved in model",
                 $ref: "#/definitions/User"
             },
             likes:[{
-                description: "only the likes' ids are saved in model",
                 $ref: "#/definitions/Like"
             }]
         },
         Like:{
             $postId: {
-                description: "only id is saved",
                 $ref: "#/definitions/Post"
             },
             $userId: {
                 description: "only id is saved",
                 $ref: "#/definitions/User"
             },
-        }
+        },
+        AddUser:{
+            $name: "ali",
+            $username: "username1",
+            age: 29,
+            $email: "felan@felan.com",
+            $phoneNumber:"01234567890",
+            $password: "password",
+        },
+        AddPost:{
+            $title: "title",
+            $text: "sample text for the post...",
+        },
+        AddLike:{
+            $postId: "123456789"
+        }  
 
     }
 }
