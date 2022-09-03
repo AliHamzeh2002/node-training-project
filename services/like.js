@@ -57,7 +57,8 @@ async function deleteLike(req){
         const like = await Like.findById(req.params.id);
         if (!like)
             throw {name:"notFoundError", message: "Like Not Found"};
-
+        if (!userId.equals(like.userId))
+            throw {name:"permissionError", message: "Permission Denied."};
         let likeIndex = req.user.likes.indexOf(like._id);
         req.user.likes.splice(likeIndex, 1);
 

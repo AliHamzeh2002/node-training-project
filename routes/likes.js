@@ -87,6 +87,8 @@ router.delete("/:id", auth,  async (req, res) => {
     catch(err){
         if (err.name === "notFoundError")
             return res.status(404).send(err.message);
+        if (err.name === "permissionError")
+            return res.status(404).send(err.message);
         res.status(500).send(err.message);
     }
 });
